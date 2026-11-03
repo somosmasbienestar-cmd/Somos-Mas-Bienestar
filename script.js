@@ -36,7 +36,10 @@ const testimonialItems = [
   { name: "Experiencia de Fernanda", detail: "Dos masajes a domicilio · Peñaflor", code: "DTdgZkIjs-H" },
   { name: "Experiencia de Karina y su esposo", detail: "Sesiones de masaje a domicilio", code: "DTG74qojgDb" },
   { name: "Jornada de bienestar para empresas", detail: "60 masajes localizados para un equipo de trabajo", code: "DS7oleKjsWH" },
-  { name: "Experiencia de Catalina", detail: "Masaje con piedras calientes", code: "DRZqtr4Dv8b" }
+  { name: "Experiencia de Catalina", detail: "Masaje con piedras calientes", code: "DRZqtr4Dv8b" },
+  { name: "Recomendación de cliente", detail: "Comentario escrito compartido en Instagram", type: "text", quote: "Excelente servicio, 100% recomendado. Muy profesional, responsable y cercano." },
+  { name: "Recomendación de cliente", detail: "Experiencia personal compartida en Instagram", type: "text", quote: "¡Súper recomendado! Muy profesional. Tengo fibromialgia y me alivió un montón el masaje." },
+  { name: "Recomendación de cliente", detail: "Comentario escrito compartido en Instagram", type: "text", quote: "Destaca el trabajo de Sergio y su preocupación por las personas atendidas." }
 ];
 
 const testimonialFrame = document.getElementById("testimonialFrame");
@@ -72,10 +75,22 @@ if (testimonialFrame) {
   const showTestimonial = index => {
     currentTestimonial = (index + testimonialItems.length) % testimonialItems.length;
     const item = testimonialItems[currentTestimonial];
-    testimonialFrame.src = `https://www.instagram.com/reel/${item.code}/embed`;
+    const quoteCard = document.getElementById("testimonialQuoteCard");
+    const quoteText = document.getElementById("testimonialQuote");
+    if (item.type === "text") {
+      testimonialFrame.hidden = true;
+      quoteCard.hidden = false;
+      quoteText.textContent = item.quote;
+      testimonialOpen.hidden = true;
+    } else {
+      testimonialFrame.hidden = false;
+      quoteCard.hidden = true;
+      testimonialFrame.src = `https://www.instagram.com/reel/${item.code}/embed`;
+      testimonialOpen.href = `https://www.instagram.com/somosmasbienestar/reel/${item.code}/`;
+      testimonialOpen.hidden = false;
+    }
     testimonialName.textContent = item.name;
     testimonialDescription.textContent = item.detail;
-    testimonialOpen.href = `https://www.instagram.com/somosmasbienestar/reel/${item.code}/`;
     testimonialCount.textContent = `${shuffledOrder.indexOf(currentTestimonial) + 1} / ${testimonialItems.length}`;
     testimonialDots.forEach((dot) => {
       const active = Number(dot.dataset.testimonial) === currentTestimonial;
