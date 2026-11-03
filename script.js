@@ -38,8 +38,7 @@ const testimonialItems = [
   { name: "Jornada de bienestar para empresas", detail: "60 masajes localizados para un equipo de trabajo", code: "DS7oleKjsWH" },
   { name: "Experiencia de Catalina", detail: "Masaje con piedras calientes", code: "DRZqtr4Dv8b" },
   { name: "Recomendación de cliente", detail: "Comentario escrito compartido en Instagram", type: "text", quote: "Excelente servicio, 100% recomendado. Muy profesional, responsable y cercano." },
-  { name: "Recomendación de cliente", detail: "Experiencia personal compartida en Instagram", type: "text", quote: "¡Súper recomendado! Muy profesional. Tengo fibromialgia y me alivió un montón el masaje." },
-  { name: "Recomendación de cliente", detail: "Comentario escrito compartido en Instagram", type: "text", quote: "Destaca el trabajo de Sergio y su preocupación por las personas atendidas." }
+  { name: "Recomendación de cliente", detail: "Experiencia personal compartida en Instagram", type: "text", quote: "¡Súper recomendado! Muy profesional. Tengo fibromialgia y me alivió un montón el masaje." }
 ];
 
 const testimonialFrame = document.getElementById("testimonialFrame");
