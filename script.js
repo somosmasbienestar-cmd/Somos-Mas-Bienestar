@@ -76,7 +76,7 @@ if (testimonialFrame) {
     testimonialName.textContent = item.name;
     testimonialDescription.textContent = item.detail;
     testimonialOpen.href = `https://www.instagram.com/somosmasbienestar/reel/${item.code}/`;
-    testimonialCount.textContent = `${currentTestimonial + 1} / ${testimonialItems.length}`;
+    testimonialCount.textContent = `${shuffledOrder.indexOf(currentTestimonial) + 1} / ${testimonialItems.length}`;
     testimonialDots.forEach((dot) => {
       const active = Number(dot.dataset.testimonial) === currentTestimonial;
       dot.classList.toggle("active", active);
@@ -95,9 +95,10 @@ if (testimonialFrame) {
     if (!paused) rotationTimer = window.setInterval(nextRandomTestimonial, 7000);
   };
 
-  previousButton.addEventListener("click", () => { showTestimonial(currentTestimonial - 1); startRotation(); });
-  nextButton.addEventListener("click", () => { showTestimonial(currentTestimonial + 1); startRotation(); });
+  previousButton.addEventListener("click", () => { rotationPosition = (rotationPosition - 1 + shuffledOrder.length) % shuffledOrder.length; showTestimonial(shuffledOrder[rotationPosition]); startRotation(); });
+  nextButton.addEventListener("click", () => { rotationPosition = (rotationPosition + 1) % shuffledOrder.length; showTestimonial(shuffledOrder[rotationPosition]); startRotation(); });
   testimonialDots.forEach(dot => dot.addEventListener("click", () => {
+    rotationPosition = shuffledOrder.indexOf(Number(dot.dataset.testimonial));
     showTestimonial(Number(dot.dataset.testimonial));
     startRotation();
   }));
@@ -118,6 +119,7 @@ if (testimonialFrame) {
     if (document.hidden) stopRotation();
     else startRotation();
   });
+  showTestimonial(currentTestimonial);
   startRotation();
 }
 
