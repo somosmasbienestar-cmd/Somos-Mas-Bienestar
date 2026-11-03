@@ -24,6 +24,77 @@ document.querySelectorAll(".choose-service").forEach(button => {
 
 document.getElementById("year").textContent = new Date().getFullYear();
 
+const testimonialItems = [
+  { name: "Experiencia de Don Matías", detail: "Quiromasaje · espalda media", code: "DXC_hZqugOC" },
+  { name: "Experiencia de Johana", detail: "Quiromasaje", code: "DWzJXXrO_Qe" },
+  { name: "Experiencia de Don Ignacio", detail: "Sobrecarga de trabajo", code: "DWPuO52uJ9c" },
+  { name: "Experiencia de Don Tomás", detail: "Relajación física y mental", code: "DWG1fbiug0o" },
+  { name: "Experiencia de Eric", detail: "Masaje descontracturante", code: "DTsJkvUjhsW" }
+];
+
+const testimonialFrame = document.getElementById("testimonialFrame");
+if (testimonialFrame) {
+  const testimonialName = document.getElementById("testimonialName");
+  const testimonialDescription = document.getElementById("testimonialDescription");
+  const testimonialOpen = document.getElementById("testimonialOpen");
+  const testimonialCount = document.getElementById("testimonialCount");
+  const testimonialDots = [...document.querySelectorAll(".testimonial-dot")];
+  const previousButton = document.getElementById("testimonialPrev");
+  const nextButton = document.getElementById("testimonialNext");
+  const pauseButton = document.getElementById("testimonialPause");
+  const carousel = document.querySelector(".testimonial-carousel");
+  let currentTestimonial = 0;
+  let rotationTimer;
+  let paused = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const showTestimonial = index => {
+    currentTestimonial = (index + testimonialItems.length) % testimonialItems.length;
+    const item = testimonialItems[currentTestimonial];
+    testimonialFrame.src = `https://www.instagram.com/reel/${item.code}/embed`;
+    testimonialName.textContent = item.name;
+    testimonialDescription.textContent = item.detail;
+    testimonialOpen.href = `https://www.instagram.com/somosmasbienestar/reel/${item.code}/`;
+    testimonialCount.textContent = `${currentTestimonial + 1} / ${testimonialItems.length}`;
+    testimonialDots.forEach((dot, i) => {
+      const active = i === currentTestimonial;
+      dot.classList.toggle("active", active);
+      dot.setAttribute("aria-pressed", String(active));
+    });
+  };
+
+  const stopRotation = () => window.clearInterval(rotationTimer);
+  const startRotation = () => {
+    stopRotation();
+    if (!paused) rotationTimer = window.setInterval(() => showTestimonial(currentTestimonial + 1), 7000);
+  };
+
+  previousButton.addEventListener("click", () => { showTestimonial(currentTestimonial - 1); startRotation(); });
+  nextButton.addEventListener("click", () => { showTestimonial(currentTestimonial + 1); startRotation(); });
+  testimonialDots.forEach(dot => dot.addEventListener("click", () => {
+    showTestimonial(Number(dot.dataset.testimonial));
+    startRotation();
+  }));
+  pauseButton.addEventListener("click", () => {
+    paused = !paused;
+    pauseButton.textContent = paused ? "▶" : "Ⅱ";
+    pauseButton.setAttribute("aria-label", paused ? "Reanudar rotación" : "Pausar rotación");
+    pauseButton.setAttribute("aria-pressed", String(paused));
+    startRotation();
+  });
+  carousel.addEventListener("mouseenter", stopRotation);
+  carousel.addEventListener("mouseleave", startRotation);
+  carousel.addEventListener("focusin", stopRotation);
+  carousel.addEventListener("focusout", event => {
+    if (!carousel.contains(event.relatedTarget)) startRotation();
+  });
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) stopRotation();
+    else startRotation();
+  });
+  startRotation();
+}
+
+
 document.getElementById("quoteForm").addEventListener("submit", event => {
   event.preventDefault();
   const form = event.currentTarget;
