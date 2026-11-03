@@ -29,7 +29,14 @@ const testimonialItems = [
   { name: "Experiencia de Johana", detail: "Quiromasaje", code: "DWzJXXrO_Qe" },
   { name: "Experiencia de Don Ignacio", detail: "Sobrecarga de trabajo", code: "DWPuO52uJ9c" },
   { name: "Experiencia de Don Tomás", detail: "Relajación física y mental", code: "DWG1fbiug0o" },
-  { name: "Experiencia de Eric", detail: "Masaje descontracturante", code: "DTsJkvUjhsW" }
+  { name: "Experiencia de Eric", detail: "Masaje descontracturante", code: "DTsJkvUjhsW" },
+  { name: "Experiencia de Don Eduardo", detail: "Quiromasaje · regalo de bienestar", code: "DVOOV3jDngR" },
+  { name: "Experiencia de María Arauco", detail: "Masaje de relajación · regalo sorpresa", code: "DVONT6djun6" },
+  { name: "Experiencia de Marcela", detail: "Masaje de relajación en pareja · Padre Hurtado", code: "DTsKhHXjgwE" },
+  { name: "Experiencia de Fernanda", detail: "Dos masajes a domicilio · Peñaflor", code: "DTdgZkIjs-H" },
+  { name: "Experiencia de Karina y su esposo", detail: "Sesiones de masaje a domicilio", code: "DTG74qojgDb" },
+  { name: "Jornada de bienestar para empresas", detail: "60 masajes localizados para un equipo de trabajo", code: "DS7oleKjsWH" },
+  { name: "Experiencia de Catalina", detail: "Masaje con piedras calientes", code: "DRZqtr4Dv8b" }
 ];
 
 const testimonialFrame = document.getElementById("testimonialFrame");
@@ -38,13 +45,28 @@ if (testimonialFrame) {
   const testimonialDescription = document.getElementById("testimonialDescription");
   const testimonialOpen = document.getElementById("testimonialOpen");
   const testimonialCount = document.getElementById("testimonialCount");
-  const testimonialDots = [...document.querySelectorAll(".testimonial-dot")];
+  const dotsContainer = document.querySelector(".testimonial-selectors");
+  const testimonialDots = [];
+  const shuffledOrder = testimonialItems.map((_, index) => index).sort(() => Math.random() - 0.5);
+  let rotationPosition = 0;
   const previousButton = document.getElementById("testimonialPrev");
   const nextButton = document.getElementById("testimonialNext");
   const pauseButton = document.getElementById("testimonialPause");
   const carousel = document.querySelector(".testimonial-carousel");
-  let currentTestimonial = 0;
+  let currentTestimonial = shuffledOrder[0];
   let rotationTimer;
+
+  shuffledOrder.forEach((itemIndex, position) => {
+    const dot = document.createElement("button");
+    dot.type = "button";
+    dot.className = "testimonial-dot";
+    dot.dataset.testimonial = String(itemIndex);
+    dot.textContent = String(position + 1);
+    dot.setAttribute("aria-label", `Ver ${testimonialItems[itemIndex].name}`);
+    dot.setAttribute("aria-pressed", "false");
+    dotsContainer.appendChild(dot);
+    testimonialDots.push(dot);
+  });
   let paused = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const showTestimonial = index => {
@@ -55,17 +77,22 @@ if (testimonialFrame) {
     testimonialDescription.textContent = item.detail;
     testimonialOpen.href = `https://www.instagram.com/somosmasbienestar/reel/${item.code}/`;
     testimonialCount.textContent = `${currentTestimonial + 1} / ${testimonialItems.length}`;
-    testimonialDots.forEach((dot, i) => {
-      const active = i === currentTestimonial;
+    testimonialDots.forEach((dot) => {
+      const active = Number(dot.dataset.testimonial) === currentTestimonial;
       dot.classList.toggle("active", active);
       dot.setAttribute("aria-pressed", String(active));
     });
   };
 
   const stopRotation = () => window.clearInterval(rotationTimer);
+  const nextRandomTestimonial = () => {
+    rotationPosition = (rotationPosition + 1) % shuffledOrder.length;
+    showTestimonial(shuffledOrder[rotationPosition]);
+  };
+
   const startRotation = () => {
     stopRotation();
-    if (!paused) rotationTimer = window.setInterval(() => showTestimonial(currentTestimonial + 1), 7000);
+    if (!paused) rotationTimer = window.setInterval(nextRandomTestimonial, 7000);
   };
 
   previousButton.addEventListener("click", () => { showTestimonial(currentTestimonial - 1); startRotation(); });
